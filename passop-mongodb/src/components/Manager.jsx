@@ -14,13 +14,15 @@ const Manager = () => {
     const [passwordBtn, setPasswordBtn] = useState("Add")
     const [passwordArray, setPasswordArray] = useState([]);
 
+    const getPasswords = async () => {
+        let req = await fetch("http://localhost:3000/")
+        let passwords = await req.json()
+        setPasswordArray(passwords)
+    }
 
     useEffect(() => {
-        const passwords = localStorage.getItem("passwords");
-        if (passwords) {
-            setPasswordArray(JSON.parse(passwords));
-        }
-    }, []);
+        getPasswords()
+    }, [])
 
     const handleKeyPress = (e, currentField) => {
         if (e.key === 'Enter') {
@@ -93,12 +95,13 @@ const Manager = () => {
         return true;
     }
 
-    const addPassword = () => {
+    const addPassword = async () => {
 
         if (checkFormLength()) {
             const newEntry = { ...form, id: uuidv4() };
             setPasswordArray([...passwordArray, newEntry]);
-            localStorage.setItem("passwords", JSON.stringify([...passwordArray, newEntry]));
+            await fetch("http://localhost:3000/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newEntry) })
+
             setForm({ website: "", username: "", password: "" });
             setPasswordBtn("Add")
 
@@ -116,34 +119,63 @@ const Manager = () => {
         }
     }
 
-    const savePassword = () => {
+    const savePassword = async () => {
         if (checkFormLength()) {
-            const updatedPasswords = passwordArray.map(item =>
-                item.id === form.id ? { ...form } : item
-            );
-            setPasswordArray(updatedPasswords);
-            localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
-            setForm({ website: "", username: "", password: "" });
-            setPasswordBtn("Add");
+            const updatedPassword = {
+                id: form.id,
+                website: form.website,
+                username: form.username,
+                password: form.password
+            };
 
-            toast.success('Password updated!', {
-                position: "top-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
+            const response = await fetch("http://localhost:3000/", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedPassword)
             });
-        }
-    }
 
-    const deletePassword = (id) => {
+            const result = await response.json();
+
+            if (result.success) {
+                const updatedPasswords = passwordArray.map(item =>
+                    item.id === form.id ? { ...form } : item
+                );
+                setPasswordArray(updatedPasswords);
+
+                setForm({ website: "", username: "", password: "" });
+                setPasswordBtn("Add");
+
+                toast.success('Password updated!', {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            } else {
+                toast.error('Failed to update password. Please try again.', {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+        }
+    };
+
+
+    const deletePassword = async (id) => {
         let c = confirm("Do you really want to delete this password?")
         if (c) {
             setPasswordArray(passwordArray.filter(item => item.id !== id))
-            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item => item.id !== id)));
+            await fetch("http://localhost:3000/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
 
             toast.success('Password deleted!', {
                 position: "top-right",
@@ -158,12 +190,12 @@ const Manager = () => {
         }
     }
 
-    const deleteAll = () => {
+    const deleteAll = async() => {
         const confirmDelete = window.confirm("Do you really want to delete ALL passwords?");
 
         if (confirmDelete) {
             setPasswordArray([]);
-            localStorage.setItem("passwords", []);
+            await fetch("http://localhost:3000/deleteAll", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify() })
 
             toast.success('All passwords deleted!', {
                 position: "top-right",
