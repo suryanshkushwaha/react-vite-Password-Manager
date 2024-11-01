@@ -2,6 +2,8 @@
 
 A lightweight password manager that uses browser's local storage for data persistence.
 
+Live Demo: [https://password-manager-localstorage-sk.vercel.app](https://password-manager-localstorage-sk.vercel.app)
+
 ## Features
 
 - 💾 Browser local storage for data persistence

@@ -2,6 +2,8 @@
 
 A full-stack password manager with MongoDB backend for cross-device password synchronization.
 
+Live Demo: [https://password-manager-mongodb-sk.vercel.app](https://password-manager-mongodb-sk.vercel.app)
+
 ## Features
 
 - 📊 MongoDB database for data persistence

@@ -9,11 +9,13 @@ PassOP is a simple and secure password manager built with React. It comes in two
    - Uses browser's local storage for data persistence
    - Lightweight and doesn't require a database
    - Perfect for personal use
+   Live Demo: [https://password-manager-localstorage-sk.vercel.app](https://password-manager-localstorage-sk.vercel.app)
 
 2. **[PassOP-MongoDB](https://github.com/suryanshkushwaha/react-vite-Password-Manager/tree/main/passop-mongodb)**
    - Uses MongoDB for data storage
    - Supports data persistence across browsers and devices
    - Suitable for multi-device usage
+   Live Demo: [https://password-manager-mongodb-sk.vercel.app](https://password-manager-mongodb-sk.vercel.app)
 
 ## Technologies Used
 - React
