@@ -1,7 +1,7 @@
 # PassOP - Password Manager
 PassOP is a simple and secure password manager built with React. It comes in two variants:
 
-![PassOP](./passop.png)
+![PassOP](./PassOP.png)
 
 
 ## Variants
