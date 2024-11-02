@@ -14,8 +14,10 @@ const Manager = () => {
     const [passwordBtn, setPasswordBtn] = useState("Add")
     const [passwordArray, setPasswordArray] = useState([]);
 
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+
     const getPasswords = async () => {
-        let req = await fetch("http://localhost:3000/")
+        let req = await fetch(`${API_URL}/`)
         let passwords = await req.json()
         setPasswordArray(passwords)
     }
@@ -100,7 +102,7 @@ const Manager = () => {
         if (checkFormLength()) {
             const newEntry = { ...form, id: uuidv4() };
             setPasswordArray([...passwordArray, newEntry]);
-            await fetch("http://localhost:3000/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newEntry) })
+            await fetch(`${API_URL}/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newEntry) })
 
             setForm({ website: "", username: "", password: "" });
             setPasswordBtn("Add")
@@ -128,7 +130,7 @@ const Manager = () => {
                 password: form.password
             };
 
-            const response = await fetch("http://localhost:3000/", {
+            const response = await fetch(`${API_URL}/`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedPassword)
@@ -175,7 +177,7 @@ const Manager = () => {
         let c = confirm("Do you really want to delete this password?")
         if (c) {
             setPasswordArray(passwordArray.filter(item => item.id !== id))
-            await fetch("http://localhost:3000/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
+            await fetch(`${API_URL}/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
 
             toast.success('Password deleted!', {
                 position: "top-right",
@@ -195,7 +197,7 @@ const Manager = () => {
 
         if (confirmDelete) {
             setPasswordArray([]);
-            await fetch("http://localhost:3000/deleteAll", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify() })
+            await fetch(`${API_URL}/deleteAll`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify() })
 
             toast.success('All passwords deleted!', {
                 position: "top-right",
